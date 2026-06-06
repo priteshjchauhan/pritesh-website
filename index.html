@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0a0a12" />
+  <!-- mark JS available + resolve theme before paint (no flash) -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      var t;
+      try { t = localStorage.getItem("prite-theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") {
+        t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      d.setAttribute("data-theme", t);
+    })();
+  </script>
+
+  <title>Pritesh J. Chauhan — Cybersecurity Leader</title>
+  <meta name="description" content="Pritesh J. Chauhan — cybersecurity leader with 19+ years of experience and an MBA, based in New York City. Helping organizations with Zero Trust, ransomware defense and security automation. Tech addict, gym addict, globetrotter and car enthusiast." />
+  <meta name="author" content="Pritesh J. Chauhan" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pritesh J. Chauhan — Cybersecurity Leader" />
+  <meta property="og:description" content="Cybersecurity professional with 19+ years of experience and an MBA, based in New York City." />
+  <meta property="og:url" content="https://p.rite.sh/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://p.rite.sh/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231d3c8c'/%3E%3Ctext x='32' y='45' font-family='Arial,sans-serif' font-size='38' font-weight='bold' fill='%23e8eefb' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- System-font fallback so typography still looks intentional fully offline -->
+  <style>
+    @font-face { font-family: "Sora"; src: local("Sora"); font-display: swap; }
+  </style>
+
+  <!-- Structured data for SEO + assistive parsing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Pritesh J. Chauhan",
+    "jobTitle": "Cybersecurity Leader",
+    "description": "Cybersecurity leader with over 19 years of experience and an MBA, focused on Zero Trust, ransomware defense and security automation.",
+    "address": { "@type": "PostalAddress", "addressLocality": "New York City", "addressRegion": "NY", "addressCountry": "US" },
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Westminster" },
+    "url": "https://p.rite.sh/",
+    "sameAs": [
+      "https://www.linkedin.com/in/priteshjchauhan/",
+      "https://www.instagram.com/p.rite.sh/"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Accessibility: skip link -->
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Page-load intro / loader -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <span class="intro-brand">p.rite.sh</span>
+      <span class="intro-count"><span id="intro-count">0</span></span>
+    </div>
+    <div class="intro-bar"><span id="intro-bar-fill"></span></div>
+  </div>
+
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Cursor-follow aurora glow -->
+  <div class="cursor-aurora" aria-hidden="true"></div>
+
+  <!-- Custom cursor (fine pointers, motion on) -->
+  <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span></div>
+
+  <!-- Decorative immersive 3D background (hidden from assistive tech) -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="bg-fallback" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Header / navigation -->
+  <header class="site-header" id="top">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="Pritesh J. Chauhan — home">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span class="brand-text">p.rite.sh</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#interests">Interests</a></li>
+        <li><a href="#connect">Connect</a></li>
+      </ul>
+      <button id="theme-toggle" class="icon-toggle" type="button" aria-label="Switch colour theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8z"/>
+        </svg>
+      </button>
+      <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false">
+        <span class="motion-toggle-dot" aria-hidden="true"></span>
+        <span class="motion-toggle-label">Motion: <strong>On</strong></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Scrollytelling chapter rail (scrollspy) -->
+  <nav class="rail" aria-label="Section progress">
+    <ol>
+      <li><a href="#hero-title" data-rail="hero"><span class="rail-num">01</span><span class="rail-label">Intro</span></a></li>
+      <li><a href="#about" data-rail="about"><span class="rail-num">02</span><span class="rail-label">About</span></a></li>
+      <li><a href="#interests" data-rail="interests"><span class="rail-num">03</span><span class="rail-label">Interests</span></a></li>
+      <li><a href="#connect" data-rail="connect"><span class="rail-num">04</span><span class="rail-label">Connect</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="smooth-wrap" id="smooth-wrap">
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="hero-eyebrow hero-anim">Currently in New York City, US</p>
+          <h1 id="hero-title" class="hero-title">
+            <span class="line"><span class="line-inner">Pritesh&nbsp;J.</span></span>
+            <span class="line"><span class="line-inner grad">Chauhan</span></span>
+          </h1>
+          <p class="hero-tags hero-anim" aria-label="Personal tags">
+            <span>Tech addict</span><span aria-hidden="true">·</span>
+            <span>Geek</span><span aria-hidden="true">·</span>
+            <span>Fast driver</span><span aria-hidden="true">·</span>
+            <span>Gym addict</span><span aria-hidden="true">·</span>
+            <span>Globetrotter</span>
+          </p>
+          <div class="hero-cta hero-anim">
+            <a class="btn btn-primary" href="#about">Discover more</a>
+            <a class="btn btn-ghost" href="#connect">Let's connect</a>
+          </div>
+        </div>
+        <figure class="hero-portrait hero-anim">
+          <img src="assets/img/portrait.jpg" width="2000" height="2000"
+               alt="Portrait of Pritesh J. Chauhan, smiling with arms crossed in a navy suit."
+               loading="eager" decoding="async" />
+        </figure>
+      </div>
+      <a class="scroll-hint" href="#about" aria-label="Scroll to about section">
+        <span class="scroll-hint-dot" aria-hidden="true"></span>
+        <span>Scroll</span>
+      </a>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <p class="section-kicker reveal"><span class="chapter">02</span>This is Pritesh</p>
+        <h2 id="about-title" class="section-title reveal">A cybersecurity leader who builds trust.</h2>
+        <p class="about-lead reveal">
+          A cybersecurity professional with over <strong>19 years of experience</strong> and an
+          <strong>MBA</strong>. He helps organizations advance their <strong>Zero Trust</strong>
+          journeys, strengthen defenses against <strong>ransomware</strong>, and modernize security
+          through <strong>automation</strong> — leading transformative improvements while preserving
+          customer trust, and pairing deep technical expertise with business acumen and leadership.
+        </p>
+        <p class="about-note reveal">
+          An MBA and University of Westminster alumnus, Pritesh is driven by continuous improvement —
+          and, beyond the day-to-day, gives back: in 2023 he took on the
+          <strong>Sewa UK Rickshaw Run</strong> for charity.
+        </p>
+        <ul class="stats" aria-label="Highlights">
+          <li class="stat reveal">
+            <span class="stat-num" data-count="19" data-suffix="+">0</span>
+            <span class="stat-label">Years of experience</span>
+          </li>
+          <li class="stat reveal">
+            <span class="stat-num">MBA</span>
+            <span class="stat-label">Business &amp; leadership</span>
+          </li>
+          <li class="stat reveal">
+            <span class="stat-num">NYC</span>
+            <span class="stat-label">Currently based</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- INTERESTS -->
+    <section class="section interests" id="interests" aria-labelledby="interests-title">
+      <div class="container">
+        <p class="section-kicker reveal"><span class="chapter">03</span>Beyond the work</p>
+        <h2 id="interests-title" class="section-title reveal">Things that drive me.</h2>
+        <ul class="cards" role="list">
+          <li class="card card-photo tilt reveal">
+            <div class="card-media">
+              <img src="assets/img/photo-1.jpg" width="1536" height="1151"
+                   alt="Sunset over a rocky shoreline, the sky glowing amber above the sea." loading="lazy" decoding="async" />
+            </div>
+            <div class="card-body">
+              <h3>Travel</h3>
+              <p>A globetrotter at heart — always chasing the next horizon, culture and connection.</p>
+            </div>
+          </li>
+          <li class="card card-photo tilt reveal">
+            <div class="card-media">
+              <img src="assets/img/photo-gym.jpg" width="1290" height="1589"
+                   alt="Stacked weight plates loaded on a barbell in a gym, in black and white." loading="lazy" decoding="async" />
+            </div>
+            <div class="card-body">
+              <h3>Gym</h3>
+              <p>Discipline built rep by rep. Strength training as a daily ritual and reset.</p>
+            </div>
+          </li>
+          <li class="card card-photo tilt reveal">
+            <div class="card-media">
+              <img src="assets/img/photo-3.jpg" width="838" height="1024"
+                   alt="View beneath a weathered pier looking out to turquoise tropical water." loading="lazy" decoding="async" />
+            </div>
+            <div class="card-body">
+              <h3>Lifestyle</h3>
+              <p>Curating a life of intention, good design, and continuous improvement.</p>
+            </div>
+          </li>
+          <li class="card card-photo tilt reveal">
+            <div class="card-media">
+              <img src="assets/img/photo-4.png" width="1024" height="526"
+                   alt="A blue BMW M6 coupe captured at speed on a track." loading="lazy" decoding="async" />
+            </div>
+            <div class="card-body">
+              <h3>Cars</h3>
+              <p>A fast driver who appreciates engineering, speed and the thrill of the open road.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONNECT -->
+    <section class="section connect" id="connect" aria-labelledby="connect-title">
+      <div class="container connect-inner">
+        <p class="section-kicker reveal"><span class="chapter">04</span>Say hello</p>
+        <h2 id="connect-title" class="section-title reveal">Let's connect.</h2>
+        <p class="connect-lead reveal">
+          This site offers a window into Pritesh's world — key links to his platforms and a glimpse of
+          his personal interests.
+        </p>
+        <div class="connect-links reveal">
+          <a class="link-card" href="https://www.linkedin.com/in/priteshjchauhan/" target="_blank" rel="noopener noreferrer">
+            <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18V9.99H5.67V18h2.67zM7 8.82a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1zM18.34 18v-4.39c0-2.35-1.26-3.44-2.93-3.44-1.35 0-1.95.74-2.29 1.26V9.99h-2.66c.04.75 0 8.01 0 8.01h2.66v-4.47c0-.24.02-.48.09-.65.19-.48.63-.97 1.36-.97.96 0 1.35.73 1.35 1.8V18h2.67z"/>
+            </svg>
+            <span class="link-text">
+              <strong>LinkedIn</strong>
+              <span>Professional profile &amp; experience</span>
+            </span>
+            <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="link-card" href="https://www.instagram.com/p.rite.sh/" target="_blank" rel="noopener noreferrer">
+            <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2zm0 1.8c-3.15 0-3.5.01-4.74.07-.9.04-1.38.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.33-.28.81-.32 1.71C3.21 8.5 3.2 8.85 3.2 12s.01 3.5.07 4.74c.04.9.19 1.38.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.33.13.81.28 1.71.32 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c.9-.04 1.38-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.33.28-.81.32-1.71.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.04-.9-.19-1.38-.32-1.71a2.86 2.86 0 0 0-.69-1.06 2.86 2.86 0 0 0-1.06-.69c-.33-.13-.81-.28-1.71-.32C15.5 4.01 15.15 4 12 4zm0 3.06A4.94 4.94 0 1 1 12 16.94 4.94 4.94 0 0 1 12 7.06zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28zm5.13-.95a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3z"/>
+            </svg>
+            <span class="link-text">
+              <strong>Instagram</strong>
+              <span>Travel, lifestyle &amp; the everyday</span>
+            </span>
+            <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">p.rite.sh</p>
+      <p class="footer-copy">© <span id="year">2025</span> Pritesh J. Chauhan. All rights reserved.</p>
+      <a class="footer-top" href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+  </div><!-- /.smooth-wrap -->
+
+  <!-- Vendored locally so the full 3D experience works on a plain file:// double-click -->
+  <script src="js/vendor/three.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
