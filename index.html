@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/styles.css?v=20" />
+  <link rel="stylesheet" href="css/styles.css?v=21" />
   <!-- System-font fallback so typography still looks intentional fully offline -->
   <style>
     @font-face { font-family: "Poppins"; src: local("Poppins"); font-display: swap; }
@@ -98,24 +98,16 @@
         <li><a href="#interests">Interests</a></li>
         <li><a href="#connect">Connect</a></li>
       </ul>
-      <button id="theme-toggle" class="icon-toggle" type="button" aria-label="Theme: System (activate to change)">
-        <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <rect x="3" y="4.5" width="18" height="12.5" rx="1.7" fill="none" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M9 20.5h6M12 17v3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
-          <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/>
-          </g>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8z"/>
-        </svg>
-      </button>
-      <button id="text-toggle" class="icon-toggle text-toggle" type="button" aria-label="Text size: Normal (activate to change)">
-        <span aria-hidden="true">A</span>
-      </button>
+      <select id="theme-select" class="ctrl-select" aria-label="Colour theme">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      <select id="text-select" class="ctrl-select" aria-label="Text size">
+        <option value="">Text: Normal</option>
+        <option value="lg">Text: Large</option>
+        <option value="xl">Text: Larger</option>
+      </select>
       <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false">
         <span class="motion-toggle-dot" aria-hidden="true"></span>
         <span class="motion-toggle-label">Motion: <strong>On</strong></span>
@@ -289,6 +281,6 @@
 
   <!-- Vendored locally so the full 3D experience works on a plain file:// double-click -->
   <script src="js/vendor/three.min.js?v=2" defer></script>
-  <script src="js/main.js?v=20" defer></script>
+  <script src="js/main.js?v=21" defer></script>
 </body>
 </html>

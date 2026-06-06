@@ -532,7 +532,7 @@ function initThree() {
     dpos[i * 3] = (Math.random() - 0.5) * R * 2;
     dpos[i * 3 + 1] = (Math.random() - 0.5) * R * 1.2;
     dpos[i * 3 + 2] = (Math.random() - 0.5) * R * 2;
-    dvel[i] = 0.002 + Math.random() * 0.004;
+    dvel[i] = 0.0008 + Math.random() * 0.0015;
   }
   const dustGeo = new THREE.BufferGeometry();
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dpos, 3));
@@ -705,8 +705,8 @@ function initThree() {
     // MORPH: ease each node toward the blended formation + gentle idle motion
     for (let i = 0; i < NODES; i++) {
       const o = i * 3;
-      const w1 = Math.sin(t * 0.18 + nph[i]) * 0.12;
-      const w2 = Math.cos(t * 0.16 + nph[i]) * 0.12;
+      const w1 = Math.sin(t * 0.10 + nph[i]) * 0.05;
+      const w2 = Math.cos(t * 0.09 + nph[i]) * 0.05;
       const tx = A[o] + (B[o] - A[o]) * e + w1;
       const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
       const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
@@ -731,7 +731,7 @@ function initThree() {
       if (d2 < REPEL2 && d2 > 0.0001) {
         const d = Math.sqrt(d2);
         const f = (1 - d / REPEL);
-        const push = f * f * 1.3;            // ease-in falloff, stronger near cursor
+        const push = f * f * 1.0;            // ease-in falloff, stronger near cursor
         ndisp[o]     += (dx / d) * push;
         ndisp[o + 1] += (dy / d) * push;
         ndisp[o + 2] += (dz / d) * push;
@@ -743,7 +743,7 @@ function initThree() {
     }
     nodeGeo.attributes.position.needsUpdate = true;
     rebuildLinks();
-    field.rotation.y += 0.00005 + energy * 0.0018;   // faster scroll spins the field
+    field.rotation.y += 0.00002 + energy * 0.0009;   // faster scroll spins the field
 
     // drift dust upward, recycle
     const p = dpos;
@@ -752,12 +752,12 @@ function initThree() {
       if (p[i * 3 + 1] > R * 0.6) p[i * 3 + 1] = -R * 0.6;
     }
     dustGeo.attributes.position.needsUpdate = true;
-    dust.rotation.y += 0.00005;
+    dust.rotation.y += 0.00002;
     stars.rotation.y += 0.0001;
 
     // parallax: the whole field leans toward the pointer (immersive depth)
-    world.rotation.x = pointer.y * 0.05;
-    world.rotation.y = pointer.x * 0.06;
+    world.rotation.x = pointer.y * 0.03;
+    world.rotation.y = pointer.x * 0.035;
 
     // FLY-THROUGH camera: arc through the scene as you scroll between scenes
     camX += ((Math.sin(sp * 1.05) * 5) - camX) * 0.05;
@@ -779,7 +779,7 @@ function initThree() {
   }
 
   function tick() {
-    t += 0.016;
+    t += 0.009;
     renderFrame();
     frame = requestAnimationFrame(tick);
   }
@@ -866,7 +866,7 @@ prefersReduced.addEventListener("change", (e) => {
 
 /* ---------- Theme: system / light / dark (system is the default) ------ */
 const THEME_KEY = "prite-theme";
-const themeToggle = document.getElementById("theme-toggle");
+const themeSelect = document.getElementById("theme-select");
 const prefersLight = window.matchMedia("(prefers-color-scheme: light)");
 function currentMode() {
   const m = document.documentElement.getAttribute("data-theme-mode");
@@ -881,38 +881,30 @@ function applyThemeMode(mode, store) {
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     if (bg) meta.setAttribute("content", bg);
   }
-  const label = mode.charAt(0).toUpperCase() + mode.slice(1);
-  if (themeToggle) themeToggle.setAttribute("aria-label", "Theme: " + label + " (activate to change)");
+  if (themeSelect && themeSelect.value !== mode) themeSelect.value = mode;
   if (three && three.setPalette) { three.setPalette(theme === "light"); three.renderStatic(); }
   if (store) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) {} }
 }
 applyThemeMode(currentMode(), false);
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const order = ["system", "light", "dark"];
-    applyThemeMode(order[(order.indexOf(currentMode()) + 1) % 3], true);
-  });
+if (themeSelect) {
+  themeSelect.addEventListener("change", () => applyThemeMode(themeSelect.value, true));
 }
 prefersLight.addEventListener("change", () => { if (currentMode() === "system") applyThemeMode("system", false); });
 
 /* ---------- Text size control (accessibility) ------------------------- */
 const TS_KEY = "prite-textsize";
-const textToggle = document.getElementById("text-toggle");
+const textSelect = document.getElementById("text-select");
 const TS_STEPS = ["", "lg", "xl"];
-const TS_LABELS = { "": "Normal", "lg": "Large", "xl": "Larger" };
 function applyTextSize(step, store) {
   if (step) document.documentElement.setAttribute("data-text", step);
   else document.documentElement.removeAttribute("data-text");
-  if (textToggle) textToggle.setAttribute("aria-label", "Text size: " + (TS_LABELS[step] || "Normal") + " (activate to change)");
+  if (textSelect && textSelect.value !== step) textSelect.value = step;
   if (store) { try { localStorage.setItem(TS_KEY, step); } catch (e) {} }
   if (typeof _smoothOn !== "undefined" && _smoothOn && typeof measureSmoothHeight === "function") measureSmoothHeight();
 }
 applyTextSize(document.documentElement.getAttribute("data-text") || "", false);
-if (textToggle) {
-  textToggle.addEventListener("click", () => {
-    const cur = document.documentElement.getAttribute("data-text") || "";
-    applyTextSize(TS_STEPS[(TS_STEPS.indexOf(cur) + 1) % TS_STEPS.length], true);
-  });
+if (textSelect) {
+  textSelect.addEventListener("change", () => applyTextSize(textSelect.value, true));
 }
 
 // Pause the loop when the tab is hidden (battery / CPU friendly).
