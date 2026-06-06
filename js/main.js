@@ -414,7 +414,7 @@ function initThree() {
   const field = new THREE.Group();
   world.add(field);
 
-  const NODES = reduced ? 130 : 320;
+  const NODES = reduced ? 95 : 220;
   const SX = 120, SY = 78, SZ = 72;
   const npos = new Float32Array(NODES * 3);
   const nph = new Float32Array(NODES);      // per-node phase for idle drift
@@ -467,7 +467,7 @@ function initThree() {
   // dynamic links between nearby nodes — vertex-coloured so they fade with
   // distance (additive blending makes dimmer = fainter). This is the organic,
   // breathing web from the original concept, now larger and layered.
-  const CONNECT = 13;
+  const CONNECT = 9;
   const MAX_SEG = NODES * 16;
   const linePos = new Float32Array(MAX_SEG * 6);
   const lineCol = new Float32Array(MAX_SEG * 6);
@@ -475,7 +475,7 @@ function initThree() {
   lineGeo.setAttribute("position", new THREE.BufferAttribute(linePos, 3).setUsage(THREE.DynamicDrawUsage));
   lineGeo.setAttribute("color", new THREE.BufferAttribute(lineCol, 3).setUsage(THREE.DynamicDrawUsage));
   const lines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
-    vertexColors: true, transparent: true, opacity: 0.8,
+    vertexColors: true, transparent: true, opacity: 0.5,
     blending: THREE.AdditiveBlending, depthWrite: false,
   }));
   field.add(lines);
@@ -794,7 +794,7 @@ function initThree() {
       nodePoints.material.color.setHex(0x1f3a82);
       nodePoints.material.opacity = 0.9;
       lines.material.blending = THREE.NormalBlending;
-      lines.material.opacity = 0.95;
+      lines.material.opacity = 0.6;
       dust.material.blending = THREE.NormalBlending;
       dust.material.color.setHex(0x4a63a0);
       dust.material.opacity = 0.3;
@@ -805,7 +805,7 @@ function initThree() {
       nodePoints.material.color.setHex(0x7a98dc);
       nodePoints.material.opacity = 0.92;
       lines.material.blending = THREE.AdditiveBlending;
-      lines.material.opacity = 0.8;
+      lines.material.opacity = 0.45;
       dust.material.blending = THREE.AdditiveBlending;
       dust.material.color.setHex(0x586fb8);
       dust.material.opacity = 0.75;
