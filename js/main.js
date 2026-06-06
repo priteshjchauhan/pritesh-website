@@ -705,8 +705,8 @@ function initThree() {
     // MORPH: ease each node toward the blended formation + gentle idle motion
     for (let i = 0; i < NODES; i++) {
       const o = i * 3;
-      const w1 = Math.sin(t * 0.32 + nph[i]) * 0.28;
-      const w2 = Math.cos(t * 0.28 + nph[i]) * 0.28;
+      const w1 = Math.sin(t * 0.18 + nph[i]) * 0.12;
+      const w2 = Math.cos(t * 0.16 + nph[i]) * 0.12;
       const tx = A[o] + (B[o] - A[o]) * e + w1;
       const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
       const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
@@ -731,7 +731,7 @@ function initThree() {
       if (d2 < REPEL2 && d2 > 0.0001) {
         const d = Math.sqrt(d2);
         const f = (1 - d / REPEL);
-        const push = f * f * 3.2;            // ease-in falloff, stronger near cursor
+        const push = f * f * 1.3;            // ease-in falloff, stronger near cursor
         ndisp[o]     += (dx / d) * push;
         ndisp[o + 1] += (dy / d) * push;
         ndisp[o + 2] += (dz / d) * push;
@@ -743,7 +743,7 @@ function initThree() {
     }
     nodeGeo.attributes.position.needsUpdate = true;
     rebuildLinks();
-    field.rotation.y += 0.00012 + energy * 0.005;   // faster scroll spins the field
+    field.rotation.y += 0.00005 + energy * 0.0018;   // faster scroll spins the field
 
     // drift dust upward, recycle
     const p = dpos;
@@ -752,20 +752,20 @@ function initThree() {
       if (p[i * 3 + 1] > R * 0.6) p[i * 3 + 1] = -R * 0.6;
     }
     dustGeo.attributes.position.needsUpdate = true;
-    dust.rotation.y += 0.00012;
+    dust.rotation.y += 0.00005;
     stars.rotation.y += 0.0001;
 
     // parallax: the whole field leans toward the pointer (immersive depth)
-    world.rotation.x = pointer.y * 0.12;
-    world.rotation.y = pointer.x * 0.16;
+    world.rotation.x = pointer.y * 0.05;
+    world.rotation.y = pointer.x * 0.06;
 
     // FLY-THROUGH camera: arc through the scene as you scroll between scenes
-    camX += ((Math.sin(sp * 1.05) * 10) - camX) * 0.06;
-    camY += ((sp * -1.4) - camY) * 0.06;
-    camZ += ((40 - sp * 6) - camZ) * 0.06;
+    camX += ((Math.sin(sp * 1.05) * 5) - camX) * 0.05;
+    camY += ((sp * -0.7) - camY) * 0.05;
+    camZ += ((40 - sp * 3) - camZ) * 0.05;
     camera.position.set(camX, camY, camZ);
     camera.lookAt(0, sp * 0.6, 0);
-    world.position.y += ((sp * 1.2) - world.position.y) * 0.05;
+    world.position.y += ((sp * 0.6) - world.position.y) * 0.04;
 
     // present: cinematic bloom in dark mode, direct transparent render in light
     if (LITE) {
@@ -864,36 +864,56 @@ prefersReduced.addEventListener("change", (e) => {
   }
 });
 
-/* ---------- Theme toggle (light / dark) ------------------------------- */
+/* ---------- Theme: system / light / dark (system is the default) ------ */
 const THEME_KEY = "prite-theme";
 const themeToggle = document.getElementById("theme-toggle");
 const prefersLight = window.matchMedia("(prefers-color-scheme: light)");
-function applyTheme(theme) {
+function currentMode() {
+  const m = document.documentElement.getAttribute("data-theme-mode");
+  return (m === "light" || m === "dark") ? m : "system";
+}
+function applyThemeMode(mode, store) {
+  document.documentElement.setAttribute("data-theme-mode", mode);
+  const theme = mode === "system" ? (prefersLight.matches ? "light" : "dark") : mode;
   document.documentElement.setAttribute("data-theme", theme);
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", theme === "light" ? "#eef1f8" : "#05070f");
-  if (themeToggle) {
-    themeToggle.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
+  if (meta) {
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    if (bg) meta.setAttribute("content", bg);
   }
-  if (three && three.setPalette) {
-    three.setPalette(theme === "light");
-    three.renderStatic();   // refresh even if the loop is paused
-  }
+  const label = mode.charAt(0).toUpperCase() + mode.slice(1);
+  if (themeToggle) themeToggle.setAttribute("aria-label", "Theme: " + label + " (activate to change)");
+  if (three && three.setPalette) { three.setPalette(theme === "light"); three.renderStatic(); }
+  if (store) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) {} }
 }
-applyTheme(isLight() ? "light" : "dark"); // sync meta/label with the pre-paint attribute
+applyThemeMode(currentMode(), false);
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
-    const next = isLight() ? "dark" : "light";
-    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-    applyTheme(next);
+    const order = ["system", "light", "dark"];
+    applyThemeMode(order[(order.indexOf(currentMode()) + 1) % 3], true);
   });
 }
-// follow the OS theme until the visitor makes an explicit choice
-prefersLight.addEventListener("change", (e) => {
-  let saved = null;
-  try { saved = localStorage.getItem(THEME_KEY); } catch (err) {}
-  if (saved !== "light" && saved !== "dark") applyTheme(e.matches ? "light" : "dark");
-});
+prefersLight.addEventListener("change", () => { if (currentMode() === "system") applyThemeMode("system", false); });
+
+/* ---------- Text size control (accessibility) ------------------------- */
+const TS_KEY = "prite-textsize";
+const textToggle = document.getElementById("text-toggle");
+const TS_STEPS = ["", "lg", "xl"];
+const TS_LABELS = { "": "Normal", "lg": "Large", "xl": "Larger" };
+function applyTextSize(step, store) {
+  if (step) document.documentElement.setAttribute("data-text", step);
+  else document.documentElement.removeAttribute("data-text");
+  if (textToggle) textToggle.setAttribute("aria-label", "Text size: " + (TS_LABELS[step] || "Normal") + " (activate to change)");
+  if (store) { try { localStorage.setItem(TS_KEY, step); } catch (e) {} }
+  if (typeof _smoothOn !== "undefined" && _smoothOn && typeof measureSmoothHeight === "function") measureSmoothHeight();
+}
+applyTextSize(document.documentElement.getAttribute("data-text") || "", false);
+if (textToggle) {
+  textToggle.addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-text") || "";
+    applyTextSize(TS_STEPS[(TS_STEPS.indexOf(cur) + 1) % TS_STEPS.length], true);
+  });
+}
 
 // Pause the loop when the tab is hidden (battery / CPU friendly).
 document.addEventListener("visibilitychange", () => {

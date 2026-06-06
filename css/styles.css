@@ -100,7 +100,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: clamp(1rem, 0.95rem + 0.2vw, 1.075rem);
   line-height: 1.65;
   overflow-x: hidden;
@@ -108,7 +108,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; line-height: 1.05; margin: 0; text-wrap: balance; }
+h1, h2, h3 { font-family: "Poppins", system-ui, sans-serif; line-height: 1.05; margin: 0; text-wrap: balance; }
 p { text-wrap: pretty; }
 
 /* Animatable gradient angle (CSS @property — cutting-edge, degrades gracefully) */
@@ -163,7 +163,7 @@ html.js .intro { display: grid; }
 .intro[hidden] { display: none; }
 .intro-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .intro-brand {
-  font-family: "Sora", sans-serif;
+  font-family: "Poppins", sans-serif;
   letter-spacing: 0.34em;
   text-transform: uppercase;
   font-size: 0.78rem;
@@ -171,7 +171,7 @@ html.js .intro { display: grid; }
   padding-left: 0.34em;
 }
 .intro-count {
-  font-family: "Sora", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 800;
   font-size: clamp(3rem, 11vw, 7rem);
   line-height: 1;
@@ -386,7 +386,7 @@ body.cursor-hover .cursor-dot { opacity: 0; }
   align-items: center;
   gap: 24px;
 }
-.brand { display: flex; align-items: center; gap: 10px; font-family: "Sora", sans-serif; font-weight: 700; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: "Poppins", sans-serif; font-weight: 700; }
 .brand-mark {
   display: grid;
   place-items: center;
@@ -434,9 +434,11 @@ body.cursor-hover .cursor-dot { opacity: 0; }
 }
 .icon-toggle:hover { color: var(--text); border-color: var(--accent); }
 .icon-toggle svg { width: 18px; height: 18px; grid-area: 1 / 1; }
-/* show the icon for the theme you'd switch TO (sun in dark, moon in light) */
-html[data-theme="dark"] .icon-toggle .icon-moon { display: none; }
-html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
+/* theme toggle shows the icon for the active mode */
+.icon-toggle .icon-system, .icon-toggle .icon-sun, .icon-toggle .icon-moon { display: none; }
+html[data-theme-mode="system"] .icon-toggle .icon-system { display: block; }
+html[data-theme-mode="light"] .icon-toggle .icon-sun { display: block; }
+html[data-theme-mode="dark"] .icon-toggle .icon-moon { display: block; }
 
 .motion-toggle {
   display: inline-flex;
@@ -487,7 +489,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   transition: color 0.25s var(--ease);
 }
 .rail-num {
-  font-family: "Sora", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   opacity: 0.6;
@@ -522,7 +524,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
 
 /* Chapter number badge inside section kickers */
 .chapter {
-  font-family: "Sora", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 0.78rem;
   color: var(--steel);
   margin-right: 12px;
@@ -777,7 +779,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
 }
 .stat-num {
   display: block;
-  font-family: "Sora", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem);
   font-weight: 800;
   background: var(--grad);
@@ -908,7 +910,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   align-items: center;
   gap: 14px 28px;
 }
-.footer-brand { font-family: "Sora", sans-serif; font-weight: 700; margin: 0; }
+.footer-brand { font-family: "Poppins", sans-serif; font-weight: 700; margin: 0; }
 .footer-copy { color: var(--text-mute); font-size: 0.9rem; margin: 0; }
 .footer-top { margin-left: auto; color: var(--text-dim); font-size: 0.9rem; }
 .footer-top:hover { color: var(--text); }
@@ -981,3 +983,14 @@ body.motion-off * { scroll-behavior: auto; }
 /* Section kicker + chapter numbers: keep FLAT (not gradient) */
 .section-kicker { background: none; color: var(--accent); -webkit-text-fill-color: currentColor; }
 .section-kicker .chapter { color: var(--steel); -webkit-text-fill-color: currentColor; }
+
+/* About stat numbers: flat & readable (not gradient) */
+.stat-num { background: none; color: var(--silver-lt); -webkit-text-fill-color: currentColor; }
+
+/* Remove the scroll-cue indicator */
+.scroll-hint { display: none !important; }
+
+/* Text-size control (accessibility) — scales rem-based type */
+html[data-text="lg"] { font-size: 115%; }
+html[data-text="xl"] { font-size: 130%; }
+.text-toggle span { font-family: "Poppins", sans-serif; font-weight: 700; font-size: 0.98rem; line-height: 1; }
