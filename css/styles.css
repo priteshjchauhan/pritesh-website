@@ -14,8 +14,8 @@
   --text-mute: #6d7691;
 
   /* Palette — navy (trust) with black + silver accents */
-  --navy:      #1d3c8c;
-  --navy-lt:   #4f7be0;          /* bright azure highlight */
+  --navy:      #173268;
+  --navy-lt:   #3a5fb5;          /* bright azure highlight */
   --navy-deep: #0d1c47;
   --silver:    #c4cddf;
   --silver-lt: #e8eefb;
@@ -23,7 +23,7 @@
   --accent:    var(--navy-lt);
   --accent-2:  var(--silver);
   --accent-3:  var(--silver-lt);
-  --grad:      linear-gradient(120deg, #2a4fa0 0%, #6f95e6 42%, #c4cddf 78%, #eef3fc 100%);
+  --grad:      linear-gradient(120deg, #1c3a86 0%, #4a6fc4 42%, #c4cddf 78%, #dbe6fa 100%);
 
   --radius:    16px;
   --radius-sm: 12px;
@@ -46,17 +46,17 @@ html[data-theme="light"] {
   --text-dim:  #3e4d6b;
   --text-mute: #5f6b85;
 
-  --navy:      #1d3c8c;
-  --navy-lt:   #2f5bb7;
+  --navy:      #173268;
+  --navy-lt:   #2a4f9a;
   --navy-deep: #14306e;
   /* "silver" roles flip to navy so icons/accents read on a light surface */
-  --silver:    #2f5bb7;
-  --silver-lt: #1d3c8c;
+  --silver:    #2a4f9a;
+  --silver-lt: #173268;
   --steel:     #5a6a90;
-  --accent:    #1f3f96;
-  --accent-2:  #2f5bb7;
-  --accent-3:  #1d3c8c;
-  --grad:      linear-gradient(120deg, #15347e 0%, #2f5bb7 45%, #5a86e6 100%);
+  --accent:    #1a3580;
+  --accent-2:  #2a4f9a;
+  --accent-3:  #173268;
+  --grad:      linear-gradient(120deg, #122a5e 0%, #2a4f9a 45%, #3f63bf 100%);
 
   --shadow:    0 26px 60px -30px rgba(20, 38, 92, 0.40);
   --glow-blue: 0 0 26px rgba(47, 91, 183, 0.35);
@@ -78,7 +78,7 @@ html[data-theme="light"] .site-header.scrolled {
   border-bottom-color: var(--border);
 }
 html[data-theme="light"] .hero-title .grad {
-  background: linear-gradient(var(--grad-angle), #15347e 0%, #2f5bb7 30%, #6f95e6 50%, #2f5bb7 72%, #15347e 100%);
+  background: linear-gradient(var(--grad-angle), #122a5e 0%, #2a4f9a 30%, #4a6fc4 50%, #2a4f9a 72%, #122a5e 100%);
   background-size: 220% 220%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -393,7 +393,7 @@ body.cursor-hover .cursor-dot { opacity: 0; }
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: linear-gradient(140deg, #4f7be0, #1d3c8c);
+  background: linear-gradient(140deg, #3a5fb5, #173268);
   color: #f3f7ff;
   font-weight: 800;
   box-shadow: 0 6px 18px -6px rgba(79, 123, 224, 0.7);
@@ -649,7 +649,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   margin: 0 0 26px;
 }
 .hero-title .grad {
-  background: linear-gradient(var(--grad-angle), #2a4fa0 0%, #6f95e6 26%, #eaf1ff 48%, #9fb6e8 72%, #2a4fa0 100%);
+  background: linear-gradient(var(--grad-angle), #1c3a86 0%, #4a6fc4 26%, #d3def5 48%, #6f8fd0 72%, #1c3a86 100%);
   background-size: 220% 220%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -689,7 +689,7 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 .btn-primary {
-  background: linear-gradient(135deg, #2f5bb7 0%, #1d3c8c 100%);
+  background: linear-gradient(135deg, #2a4f9a 0%, #173268 100%);
   background-size: 180% 180%;
   color: #f3f7ff;
   font-weight: 700;
