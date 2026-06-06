@@ -312,7 +312,14 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener("click", (e) => {
     const href = a.getAttribute("href");
     if (!href || href.length < 2) return;
-    const el = document.getElementById(href.slice(1));
+    const id = href.slice(1);
+    // "#top" targets the fixed header, so just go to the very top of the page
+    if (id === "top") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: _smoothOn ? "auto" : "smooth" });
+      return;
+    }
+    const el = document.getElementById(id);
     if (!el || !_smoothOn) return;
     e.preventDefault();
     window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + _smoothY - 70) });
