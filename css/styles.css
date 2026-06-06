@@ -940,3 +940,6 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
 body.motion-off .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 body.motion-off .scroll-hint-dot::after { animation: none; }
 body.motion-off * { scroll-behavior: auto; }
+
+/* single centered connect card (Instagram removed) */
+.connect-links--single { grid-template-columns: minmax(0, 420px); justify-content: center; }
