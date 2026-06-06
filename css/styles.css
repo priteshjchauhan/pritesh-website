@@ -688,16 +688,17 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   border: 1px solid transparent;
   transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
+/* vasly-style: deep -> lighter diagonal gradient + soft colour-matched shadow */
 .btn-primary {
-  background: linear-gradient(135deg, #3a63c0 0%, #1d3c8c 45%, #0f2350 100%);
-  background-size: 160% 160%;
+  background: linear-gradient(135deg, #0b1c44 0%, #2f5bb7 100%);
+  background-size: 140% 140%;
   color: #f3f7ff;
   font-weight: 700;
-  box-shadow: 0 14px 34px -12px rgba(42, 79, 154, 0.6);
+  box-shadow: 0 8px 20px rgba(29, 60, 140, 0.40), 0 2px 6px rgba(0, 0, 0, 0.30);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 22px 46px -12px rgba(58, 99, 192, 0.7);
+  box-shadow: 0 14px 28px rgba(47, 91, 183, 0.50), 0 3px 8px rgba(0, 0, 0, 0.35);
   background-position: 100% 50%;
 }
 .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
