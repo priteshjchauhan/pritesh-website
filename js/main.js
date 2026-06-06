@@ -532,7 +532,7 @@ function initThree() {
     dpos[i * 3] = (Math.random() - 0.5) * R * 2;
     dpos[i * 3 + 1] = (Math.random() - 0.5) * R * 1.2;
     dpos[i * 3 + 2] = (Math.random() - 0.5) * R * 2;
-    dvel[i] = 0.004 + Math.random() * 0.01;
+    dvel[i] = 0.002 + Math.random() * 0.004;
   }
   const dustGeo = new THREE.BufferGeometry();
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dpos, 3));
@@ -705,8 +705,8 @@ function initThree() {
     // MORPH: ease each node toward the blended formation + gentle idle motion
     for (let i = 0; i < NODES; i++) {
       const o = i * 3;
-      const w1 = Math.sin(t * 0.6 + nph[i]) * 0.5;
-      const w2 = Math.cos(t * 0.5 + nph[i]) * 0.5;
+      const w1 = Math.sin(t * 0.32 + nph[i]) * 0.28;
+      const w2 = Math.cos(t * 0.28 + nph[i]) * 0.28;
       const tx = A[o] + (B[o] - A[o]) * e + w1;
       const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
       const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
@@ -743,7 +743,7 @@ function initThree() {
     }
     nodeGeo.attributes.position.needsUpdate = true;
     rebuildLinks();
-    field.rotation.y += 0.0004 + energy * 0.012;   // faster scroll spins the field
+    field.rotation.y += 0.00012 + energy * 0.005;   // faster scroll spins the field
 
     // drift dust upward, recycle
     const p = dpos;
@@ -752,8 +752,8 @@ function initThree() {
       if (p[i * 3 + 1] > R * 0.6) p[i * 3 + 1] = -R * 0.6;
     }
     dustGeo.attributes.position.needsUpdate = true;
-    dust.rotation.y += 0.0004;
-    stars.rotation.y += 0.0002;
+    dust.rotation.y += 0.00012;
+    stars.rotation.y += 0.0001;
 
     // parallax: the whole field leans toward the pointer (immersive depth)
     world.rotation.x = pointer.y * 0.12;

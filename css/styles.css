@@ -977,3 +977,7 @@ body.motion-off * { scroll-behavior: auto; }
 }
 .btn-ghost:hover { border-color: transparent; }
 .btn-ghost:hover::before { opacity: 1; }
+
+/* Section kicker + chapter numbers: keep FLAT (not gradient) */
+.section-kicker { background: none; color: var(--accent); -webkit-text-fill-color: currentColor; }
+.section-kicker .chapter { color: var(--steel); -webkit-text-fill-color: currentColor; }
