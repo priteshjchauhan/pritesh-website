@@ -689,17 +689,15 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 .btn-primary {
-  background: linear-gradient(135deg, #122247 0%, #08122c 100%);
-  background-size: 180% 180%;
-  color: #eaf0ff;
+  background: linear-gradient(135deg, #3a63c0 0%, #1d3c8c 45%, #0f2350 100%);
+  background-size: 160% 160%;
+  color: #f3f7ff;
   font-weight: 700;
-  border: 1px solid rgba(79, 123, 224, 0.85);
-  box-shadow: 0 0 22px rgba(79, 123, 224, 0.45), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 14px 34px -12px rgba(42, 79, 154, 0.6);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  border-color: #4f7be0;
-  box-shadow: 0 0 30px rgba(79, 123, 224, 0.6), 0 18px 40px -14px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 22px 46px -12px rgba(58, 99, 192, 0.7);
   background-position: 100% 50%;
 }
 .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
