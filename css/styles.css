@@ -642,10 +642,11 @@ html[data-theme="light"] .icon-toggle .icon-sun { display: none; }
   box-shadow: 0 0 10px var(--accent-3);
 }
 .hero-title {
-  font-size: clamp(3rem, 1.5rem + 9vw, 7.5rem);
+  font-size: clamp(3.2rem, 1.4rem + 10.5vw, 9rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  margin: 0 0 24px;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin: 0 0 26px;
 }
 .hero-title .grad {
   background: linear-gradient(var(--grad-angle), #2a4fa0 0%, #6f95e6 26%, #eaf1ff 48%, #9fb6e8 72%, #2a4fa0 100%);

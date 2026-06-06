@@ -407,19 +407,46 @@ function initThree() {
   const field = new THREE.Group();
   world.add(field);
 
-  const NODES = reduced ? 120 : 300;
+  const NODES = reduced ? 130 : 320;
   const SX = 120, SY = 78, SZ = 72;
   const npos = new Float32Array(NODES * 3);
-  const nvel = new Float32Array(NODES * 3);
+  const nph = new Float32Array(NODES);      // per-node phase for idle drift
+
+  // FORMATIONS the field morphs between as you scroll (fly-through scenes):
+  // 0 cloud (hero) → 1 sphere shell (about) → 2 grid plane (interests) → 3 vortex (connect)
+  const FORMS = 4;
+  const F = [];
+  for (let k = 0; k < FORMS; k++) F.push(new Float32Array(NODES * 3));
+  const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+  const cols = Math.ceil(Math.sqrt(NODES));
   for (let i = 0; i < NODES; i++) {
-    npos[i * 3]     = (Math.random() - 0.5) * SX;
-    npos[i * 3 + 1] = (Math.random() - 0.5) * SY;
-    npos[i * 3 + 2] = (Math.random() - 0.5) * SZ - 6;
-    nvel[i * 3]     = (Math.random() - 0.5) * 0.018;
-    nvel[i * 3 + 1] = (Math.random() - 0.5) * 0.018;
-    nvel[i * 3 + 2] = (Math.random() - 0.5) * 0.018;
+    nph[i] = Math.random() * Math.PI * 2;
+    // 0 — deep-space cloud
+    F[0][i * 3]     = (Math.random() - 0.5) * SX;
+    F[0][i * 3 + 1] = (Math.random() - 0.5) * SY;
+    F[0][i * 3 + 2] = (Math.random() - 0.5) * SZ - 6;
+    // 1 — sphere shell (fibonacci)
+    const y = 1 - (i / (NODES - 1)) * 2;
+    const rr = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = GOLDEN * i;
+    F[1][i * 3]     = Math.cos(th) * rr * 30;
+    F[1][i * 3 + 1] = y * 26;
+    F[1][i * 3 + 2] = Math.sin(th) * rr * 30;
+    // 2 — grid plane
+    F[2][i * 3]     = ((i % cols) / (cols - 1) - 0.5) * SX * 0.96;
+    F[2][i * 3 + 1] = (Math.floor(i / cols) / (cols - 1) - 0.5) * SY * 0.96;
+    F[2][i * 3 + 2] = (Math.random() - 0.5) * 7;
+    // 3 — vortex / helix
+    const tt = i / NODES;
+    const ang = tt * Math.PI * 9;
+    const vr = 7 + tt * 30;
+    F[3][i * 3]     = Math.cos(ang) * vr;
+    F[3][i * 3 + 1] = (tt - 0.5) * SY * 1.15;
+    F[3][i * 3 + 2] = Math.sin(ang) * vr;
+    // start at the cloud
+    npos[i * 3] = F[0][i * 3]; npos[i * 3 + 1] = F[0][i * 3 + 1]; npos[i * 3 + 2] = F[0][i * 3 + 2];
   }
-  // nrender = what's drawn (drift base npos + eased cursor displacement ndisp)
+  // nrender = what's drawn (morph base npos + eased cursor displacement ndisp)
   const nrender = new Float32Array(npos);
   const ndisp = new Float32Array(NODES * 3);
   const nodeGeo = new THREE.BufferGeometry();
@@ -544,10 +571,108 @@ function initThree() {
   let scrollY = window.scrollY;
   window.addEventListener("scroll", () => (scrollY = window.scrollY), { passive: true });
 
+  // scroll-velocity "energy": fast scrolling charges the field + bloom
+  let energy = 0, prevSp = 0;
+
+  /* ---------- Cinematic post-processing: custom bloom + vignette + grain ----
+     A hand-rolled pipeline (core Three only, so it still runs on file://):
+     render scene → bright-pass → separable blur (ping-pong) → composite.
+     Used in dark mode (additive glow); light mode renders directly. --------- */
+  const QUAD = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
+  const postScene = new THREE.Scene();
+  postScene.add(QUAD);
+  const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const VERT = "varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }";
+
+  const brightMat = new THREE.ShaderMaterial({
+    uniforms: { tDiffuse: { value: null }, threshold: { value: 0.22 } },
+    vertexShader: VERT,
+    fragmentShader:
+      "uniform sampler2D tDiffuse; uniform float threshold; varying vec2 vUv;" +
+      "void main(){ vec3 c=texture2D(tDiffuse,vUv).rgb; float l=dot(c,vec3(0.299,0.587,0.114));" +
+      "float k=smoothstep(threshold,threshold+0.35,l); gl_FragColor=vec4(c*k,1.0); }",
+  });
+  const blurMat = new THREE.ShaderMaterial({
+    uniforms: { tDiffuse: { value: null }, dir: { value: new THREE.Vector2() } },
+    vertexShader: VERT,
+    fragmentShader:
+      "uniform sampler2D tDiffuse; uniform vec2 dir; varying vec2 vUv;" +
+      "void main(){ vec3 s=texture2D(tDiffuse,vUv).rgb*0.227027;" +
+      "s+=texture2D(tDiffuse,vUv+dir*1.3846).rgb*0.316216;" +
+      "s+=texture2D(tDiffuse,vUv-dir*1.3846).rgb*0.316216;" +
+      "s+=texture2D(tDiffuse,vUv+dir*3.2307).rgb*0.070270;" +
+      "s+=texture2D(tDiffuse,vUv-dir*3.2307).rgb*0.070270;" +
+      "gl_FragColor=vec4(s,1.0); }",
+  });
+  const compMat = new THREE.ShaderMaterial({
+    uniforms: {
+      tScene: { value: null }, tBloom: { value: null },
+      strength: { value: 1.15 }, time: { value: 0 }, res: { value: new THREE.Vector2() },
+    },
+    vertexShader: VERT,
+    fragmentShader:
+      "uniform sampler2D tScene; uniform sampler2D tBloom; uniform float strength;" +
+      "uniform float time; uniform vec2 res; varying vec2 vUv;" +
+      "float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }" +
+      "void main(){ vec3 col=texture2D(tScene,vUv).rgb + texture2D(tBloom,vUv).rgb*strength;" +
+      "vec2 q=vUv-0.5; float vig=smoothstep(1.05,0.30,length(q)); col*=mix(0.62,1.0,vig);" +  // vignette / depth
+      "float g=hash(vUv*res+fract(time))*0.06-0.03; col+=g;" +                                 // film grain
+      "gl_FragColor=vec4(col,1.0); }",
+  });
+
+  let rtScene, rtA, rtB;
+  const dbSize = new THREE.Vector2();
+  function buildTargets() {
+    renderer.getDrawingBufferSize(dbSize);
+    const w = Math.max(2, dbSize.x), h = Math.max(2, dbSize.y);
+    const bw = Math.max(2, Math.floor(w * 0.5)), bh = Math.max(2, Math.floor(h * 0.5));
+    if (rtScene) { rtScene.dispose(); rtA.dispose(); rtB.dispose(); }
+    rtScene = new THREE.WebGLRenderTarget(w, h);
+    rtA = new THREE.WebGLRenderTarget(bw, bh);
+    rtB = new THREE.WebGLRenderTarget(bw, bh);
+    compMat.uniforms.res.value.set(bw, bh);
+  }
+  buildTargets();
+
+  function renderBloom() {
+    renderer.setClearColor(0x05070f, 1);
+    renderer.setRenderTarget(rtScene);
+    renderer.clear();
+    renderer.render(scene, camera);
+    // bright pass
+    QUAD.material = brightMat;
+    brightMat.uniforms.tDiffuse.value = rtScene.texture;
+    renderer.setRenderTarget(rtA);
+    renderer.render(postScene, postCam);
+    // separable blur, a few iterations for a wide, soft bloom
+    QUAD.material = blurMat;
+    const bw = rtA.width, bh = rtA.height;
+    for (let p = 0; p < 3; p++) {
+      const spread = 1 + p;
+      blurMat.uniforms.tDiffuse.value = rtA.texture;
+      blurMat.uniforms.dir.value.set(spread / bw, 0);
+      renderer.setRenderTarget(rtB);
+      renderer.render(postScene, postCam);
+      blurMat.uniforms.tDiffuse.value = rtB.texture;
+      blurMat.uniforms.dir.value.set(0, spread / bh);
+      renderer.setRenderTarget(rtA);
+      renderer.render(postScene, postCam);
+    }
+    // composite to screen
+    QUAD.material = compMat;
+    compMat.uniforms.tScene.value = rtScene.texture;
+    compMat.uniforms.tBloom.value = rtA.texture;
+    compMat.uniforms.strength.value = 1.15 + energy * 0.5;   // bloom flares with scroll energy
+    compMat.uniforms.time.value = t;
+    renderer.setRenderTarget(null);
+    renderer.render(postScene, postCam);
+  }
+
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    buildTargets();
   }
   window.addEventListener("resize", onResize);
 
@@ -555,18 +680,32 @@ function initThree() {
   let frame = null;
   let t = 0;
 
+  let camX = 0, camY = 0, camZ = 40;
   function renderFrame() {
     pointer.x += (pointer.tx - pointer.x) * 0.045;
     pointer.y += (pointer.ty - pointer.y) * 0.045;
 
-    // organic drift of the network nodes inside their bounding box
+    // scroll progress 0..3 across the four fly-through scenes
+    const sp = Math.min(getScroll() / Math.max(window.innerHeight, 1), 3);
+    const seg = Math.min(Math.floor(sp), FORMS - 2);
+    const raw = sp - seg;
+    const e = raw * raw * (3 - 2 * raw);          // smoothstep blend
+    const A = F[seg], B = F[seg + 1];
+    energy = energy * 0.9 + Math.abs(sp - prevSp) * 7;
+    energy = Math.min(energy, 1.5);
+    prevSp = sp;
+
+    // MORPH: ease each node toward the blended formation + gentle idle motion
     for (let i = 0; i < NODES; i++) {
-      for (let a = 0; a < 3; a++) {
-        const idx = i * 3 + a;
-        npos[idx] += nvel[idx];
-        const bound = (a === 0 ? SX : a === 1 ? SY : SZ) / 2;
-        if (npos[idx] > bound || npos[idx] < -bound) nvel[idx] *= -1;
-      }
+      const o = i * 3;
+      const w1 = Math.sin(t * 0.6 + nph[i]) * 0.5;
+      const w2 = Math.cos(t * 0.5 + nph[i]) * 0.5;
+      const tx = A[o] + (B[o] - A[o]) * e + w1;
+      const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
+      const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
+      npos[o]     += (tx - npos[o]) * 0.06;
+      npos[o + 1] += (ty - npos[o + 1]) * 0.06;
+      npos[o + 2] += (tz - npos[o + 2]) * 0.06;
     }
 
     // CURSOR-REACTIVE: push nearby nodes away from the pointer, then let the
@@ -597,7 +736,7 @@ function initThree() {
     }
     nodeGeo.attributes.position.needsUpdate = true;
     rebuildLinks();
-    field.rotation.y += 0.0004;
+    field.rotation.y += 0.0004 + energy * 0.012;   // faster scroll spins the field
 
     // drift dust upward, recycle
     const p = dpos;
@@ -613,14 +752,23 @@ function initThree() {
     world.rotation.x = pointer.y * 0.12;
     world.rotation.y = pointer.x * 0.16;
 
-    // SCROLLYTELLING: glide forward through the network as you scroll
-    // (uses the smoothed scroll value so the 3D matches the eased page motion)
-    const sp = Math.min(getScroll() / Math.max(window.innerHeight, 1), 4);
-    camera.position.z = 38 - sp * 5;
-    camera.position.y = sp * -1.2;
-    world.position.y += ((sp * 2.0) - world.position.y) * 0.06;
+    // FLY-THROUGH camera: arc through the scene as you scroll between scenes
+    camX += ((Math.sin(sp * 1.05) * 10) - camX) * 0.06;
+    camY += ((sp * -1.4) - camY) * 0.06;
+    camZ += ((40 - sp * 6) - camZ) * 0.06;
+    camera.position.set(camX, camY, camZ);
+    camera.lookAt(0, sp * 0.6, 0);
+    world.position.y += ((sp * 1.2) - world.position.y) * 0.05;
 
-    renderer.render(scene, camera);
+    // present: cinematic bloom in dark mode, direct transparent render in light
+    if (LITE) {
+      renderer.setRenderTarget(null);
+      renderer.setClearColor(0x000000, 0);
+      renderer.clear();
+      renderer.render(scene, camera);
+    } else {
+      renderBloom();
+    }
   }
 
   function tick() {
