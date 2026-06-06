@@ -459,7 +459,7 @@ function initThree() {
   const nodeGeo = new THREE.BufferGeometry();
   nodeGeo.setAttribute("position", new THREE.BufferAttribute(nrender, 3).setUsage(THREE.DynamicDrawUsage));
   const nodePoints = new THREE.Points(nodeGeo, new THREE.PointsMaterial({
-    map: glowTex, color: 0x9fb6ee, size: 1.6, sizeAttenuation: true,
+    map: glowTex, color: 0x7a98dc, size: 1.6, sizeAttenuation: true,
     transparent: true, opacity: 0.92, blending: THREE.AdditiveBlending, depthWrite: false,
   }));
   field.add(nodePoints);
@@ -538,7 +538,7 @@ function initThree() {
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dpos, 3));
   const dustMat = new THREE.PointsMaterial({
     map: glowTex,
-    color: 0x6f8fd8,
+    color: 0x586fb8,
     size: 0.7,
     sizeAttenuation: true,
     transparent: true,
@@ -802,12 +802,12 @@ function initThree() {
     } else {
       scene.fog.color.setHex(0x05080f);
       nodePoints.material.blending = THREE.AdditiveBlending;
-      nodePoints.material.color.setHex(0x9fb6ee);
+      nodePoints.material.color.setHex(0x7a98dc);
       nodePoints.material.opacity = 0.92;
       lines.material.blending = THREE.AdditiveBlending;
       lines.material.opacity = 0.8;
       dust.material.blending = THREE.AdditiveBlending;
-      dust.material.color.setHex(0x6f8fd8);
+      dust.material.color.setHex(0x586fb8);
       dust.material.opacity = 0.75;
       stars.material.opacity = 0.55;
     }
