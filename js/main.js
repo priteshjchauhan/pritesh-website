@@ -697,7 +697,10 @@ function initThree() {
     pointer.y += (pointer.ty - pointer.y) * 0.045;
 
     // scroll progress 0..3 across the four fly-through scenes
-    const sp = Math.min(getScroll() / Math.max(window.innerHeight, 1), 3);
+    // map the full page scroll range to the scenes so the very bottom always resolves
+    // to the final line formation (otherwise it stalls mid-morph as an ellipse)
+    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    const sp = Math.min(getScroll() / maxScroll, 1) * (FORMS - 1);
     const seg = Math.min(Math.floor(sp), FORMS - 2);
     const raw = sp - seg;
     // gather into a single horizontal line at the section midpoint, drop out past it
