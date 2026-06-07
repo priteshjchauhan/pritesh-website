@@ -866,8 +866,9 @@ prefersReduced.addEventListener("change", (e) => {
 
 /* ---------- Theme: system / light / dark (system is the default) ------ */
 const THEME_KEY = "prite-theme";
-const themeSelect = document.getElementById("theme-select");
 const prefersLight = window.matchMedia("(prefers-color-scheme: light)");
+const themeBtn = document.getElementById("theme-toggle");
+const themeMenu = document.getElementById("theme-menu");
 function currentMode() {
   const m = document.documentElement.getAttribute("data-theme-mode");
   return (m === "light" || m === "dark") ? m : "system";
@@ -881,30 +882,36 @@ function applyThemeMode(mode, store) {
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     if (bg) meta.setAttribute("content", bg);
   }
-  if (themeSelect && themeSelect.value !== mode) themeSelect.value = mode;
+  if (themeMenu) themeMenu.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.mode === mode)));
   if (three && three.setPalette) { three.setPalette(theme === "light"); three.renderStatic(); }
   if (store) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) {} }
 }
 applyThemeMode(currentMode(), false);
-if (themeSelect) {
-  themeSelect.addEventListener("change", () => applyThemeMode(themeSelect.value, true));
-}
 prefersLight.addEventListener("change", () => { if (currentMode() === "system") applyThemeMode("system", false); });
 
 /* ---------- Text size control (accessibility) ------------------------- */
 const TS_KEY = "prite-textsize";
-const textSelect = document.getElementById("text-select");
-const TS_STEPS = ["", "lg", "xl"];
 function applyTextSize(step, store) {
   if (step) document.documentElement.setAttribute("data-text", step);
   else document.documentElement.removeAttribute("data-text");
-  if (textSelect && textSelect.value !== step) textSelect.value = step;
+  if (themeMenu) themeMenu.querySelectorAll("[data-size]").forEach((b) => b.setAttribute("aria-checked", String((b.dataset.size || "") === step)));
   if (store) { try { localStorage.setItem(TS_KEY, step); } catch (e) {} }
   if (typeof _smoothOn !== "undefined" && _smoothOn && typeof measureSmoothHeight === "function") measureSmoothHeight();
 }
 applyTextSize(document.documentElement.getAttribute("data-text") || "", false);
-if (textSelect) {
-  textSelect.addEventListener("change", () => applyTextSize(textSelect.value, true));
+
+/* ---------- Display dropdown (vasly-style menu) ------------------------ */
+if (themeBtn && themeMenu) {
+  const closeMenu = () => { themeMenu.hidden = true; themeBtn.setAttribute("aria-expanded", "false"); };
+  const openMenu = () => { themeMenu.hidden = false; themeBtn.setAttribute("aria-expanded", "true"); };
+  themeBtn.addEventListener("click", (e) => { e.stopPropagation(); themeMenu.hidden ? openMenu() : closeMenu(); });
+  themeMenu.addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.hasAttribute("data-mode")) applyThemeMode(b.dataset.mode, true);
+    else if (b.hasAttribute("data-size")) applyTextSize(b.dataset.size || "", true);
+  });
+  document.addEventListener("click", (e) => { if (!themeMenu.hidden && !e.target.closest(".theme-picker")) closeMenu(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !themeMenu.hidden) { closeMenu(); themeBtn.focus(); } });
 }
 
 // Pause the loop when the tab is hidden (battery / CPU friendly).
