@@ -705,8 +705,8 @@ function initThree() {
     // MORPH: ease each node toward the blended formation + gentle idle motion
     for (let i = 0; i < NODES; i++) {
       const o = i * 3;
-      const w1 = Math.sin(t * 0.10 + nph[i]) * 0.05;
-      const w2 = Math.cos(t * 0.09 + nph[i]) * 0.05;
+      const w1 = Math.sin(t * 0.13 + nph[i]) * 0.075;
+      const w2 = Math.cos(t * 0.11 + nph[i]) * 0.075;
       const tx = A[o] + (B[o] - A[o]) * e + w1;
       const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
       const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
@@ -743,7 +743,7 @@ function initThree() {
     }
     nodeGeo.attributes.position.needsUpdate = true;
     rebuildLinks();
-    field.rotation.y += 0.00002 + energy * 0.0009;   // faster scroll spins the field
+    field.rotation.y += 0.00007 + energy * 0.0009;   // faster scroll spins the field
 
     // drift dust upward, recycle
     const p = dpos;
@@ -752,7 +752,7 @@ function initThree() {
       if (p[i * 3 + 1] > R * 0.6) p[i * 3 + 1] = -R * 0.6;
     }
     dustGeo.attributes.position.needsUpdate = true;
-    dust.rotation.y += 0.00002;
+    dust.rotation.y += 0.00004;
     stars.rotation.y += 0.0001;
 
     // parallax: the whole field leans toward the pointer (immersive depth)
@@ -779,9 +779,9 @@ function initThree() {
   }
 
   function tick() {
-    t += 0.009;
-    renderFrame();
     frame = requestAnimationFrame(tick);
+    t += 0.009;
+    try { renderFrame(); } catch (e) {}
   }
 
   // recolour the scene for light / dark (additive only works on a dark bg, so
@@ -819,7 +819,7 @@ function initThree() {
   setScenePalette(isLight());
 
   three = {
-    start() { if (!frame) tick(); },
+    start() { if (frame) cancelAnimationFrame(frame); frame = null; tick(); },
     stop() { if (frame) cancelAnimationFrame(frame); frame = null; renderFrame(); },
     renderStatic() { renderFrame(); },
     setPalette: setScenePalette,
@@ -920,6 +920,8 @@ document.addEventListener("visibilitychange", () => {
   if (document.hidden) three.stop();
   else if (motionEnabled) three.start();
 });
+window.addEventListener("focus", () => { if (three && motionEnabled) three.start(); });
+window.addEventListener("pageshow", () => { if (three && motionEnabled) three.start(); });
 
 /* ---------- Boot ------------------------------------------------------ */
 applyMotion();

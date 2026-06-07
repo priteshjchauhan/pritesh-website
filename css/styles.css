@@ -214,7 +214,7 @@ body.intro-done .hero-cta.hero-anim { opacity: 1; transform: none; transition-de
 .section-title { overflow: hidden; }
 .section-title .title-inner { display: block; transition: transform 0.95s var(--ease); }
 html.js .section-title .title-inner { transform: translateY(110%); }
-.section-title.is-visible .title-inner { transform: none; }
+html.js .section-title.is-visible .title-inner { transform: none; }
 body.motion-off .section-title .title-inner,
 body.motion-off .hero-title .line-inner,
 body.motion-off .hero-anim { transform: none !important; opacity: 1 !important; transition: none !important; }
@@ -1074,3 +1074,8 @@ html[data-theme-mode="dark"] .theme-toggle .icon-moon { display: inline-flex; }
 .tm-sizes button:hover { background: var(--surface-2); color: var(--text); }
 .tm-sizes button[aria-checked="true"] { border-color: var(--accent); color: var(--accent); }
 :focus-visible.theme-toggle, .theme-menu button:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 2px; }
+
+
+/* Remove decorative dots (motion button + "currently in" eyebrow) */
+.motion-toggle-dot { display: none !important; }
+.hero-eyebrow::before { content: none !important; }
