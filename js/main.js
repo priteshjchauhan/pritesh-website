@@ -443,10 +443,10 @@ function initThree() {
     F[2][i * 3]     = ((i % cols) / (cols - 1) - 0.5) * SX * 0.96;
     F[2][i * 3 + 1] = (Math.floor(i / cols) / (cols - 1) - 0.5) * SY * 0.96;
     F[2][i * 3 + 2] = (Math.random() - 0.5) * 7;
-    // 3 — calm wide horizontal band (page ends flat, not a tilted oval/vortex)
-    F[3][i * 3]     = ((i % cols) / (cols - 1) - 0.5) * SX * 0.94;
-    F[3][i * 3 + 1] = (Math.floor(i / cols) / (cols - 1) - 0.5) * 16;
-    F[3][i * 3 + 2] = (Math.random() - 0.5) * 10;
+    // 3 — resolve to a single horizontal line (page ends on a clean line)
+    F[3][i * 3]     = (i / (NODES - 1) - 0.5) * SX * 0.94;
+    F[3][i * 3 + 1] = (Math.random() - 0.5) * 1.2;
+    F[3][i * 3 + 2] = (Math.random() - 0.5) * 2.0;
     // start at the cloud
     npos[i * 3] = F[0][i * 3]; npos[i * 3 + 1] = F[0][i * 3 + 1]; npos[i * 3 + 2] = F[0][i * 3 + 2];
   }
