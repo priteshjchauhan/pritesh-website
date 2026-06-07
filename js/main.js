@@ -443,13 +443,10 @@ function initThree() {
     F[2][i * 3]     = ((i % cols) / (cols - 1) - 0.5) * SX * 0.96;
     F[2][i * 3 + 1] = (Math.floor(i / cols) / (cols - 1) - 0.5) * SY * 0.96;
     F[2][i * 3 + 2] = (Math.random() - 0.5) * 7;
-    // 3 — vortex / helix
-    const tt = i / NODES;
-    const ang = tt * Math.PI * 9;
-    const vr = 7 + tt * 30;
-    F[3][i * 3]     = Math.cos(ang) * vr;
-    F[3][i * 3 + 1] = (tt - 0.5) * SY * 1.15;
-    F[3][i * 3 + 2] = Math.sin(ang) * vr;
+    // 3 — calm wide horizontal band (page ends flat, not a tilted oval/vortex)
+    F[3][i * 3]     = ((i % cols) / (cols - 1) - 0.5) * SX * 0.94;
+    F[3][i * 3 + 1] = (Math.floor(i / cols) / (cols - 1) - 0.5) * 16;
+    F[3][i * 3 + 2] = (Math.random() - 0.5) * 10;
     // start at the cloud
     npos[i * 3] = F[0][i * 3]; npos[i * 3 + 1] = F[0][i * 3 + 1]; npos[i * 3 + 2] = F[0][i * 3 + 2];
   }
@@ -769,8 +766,8 @@ function initThree() {
     stars.rotation.y += (0 - stars.rotation.y) * 0.02;
     // visible only between sections: fade hard over a section, surge into the line
     const between = lineness * lineness;   // sharp falloff so only the transition region lights up
-    nodePoints.material.opacity = (LITE ? 0.9 : 0.92) * (0.08 + 0.92 * between);
-    lines.material.opacity = (LITE ? 0.6 : 0.45) * (0.05 + 0.95 * between);
+    nodePoints.material.opacity = (LITE ? 0.9 : 0.92) * (0.16 + 0.84 * between);
+    lines.material.opacity = (LITE ? 0.6 : 0.45) * (0.10 + 0.90 * between);
     dust.material.opacity = (LITE ? 0.30 : 0.75) * (0.10 + 0.65 * lineness);
     stars.material.opacity = (LITE ? 0.0 : 0.45) * (0.12 + 0.60 * lineness);
 
