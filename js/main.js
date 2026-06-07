@@ -454,6 +454,13 @@ function initThree() {
     npos[i * 3] = F[0][i * 3]; npos[i * 3 + 1] = F[0][i * 3 + 1]; npos[i * 3 + 2] = F[0][i * 3 + 2];
   }
   // nrender = what's drawn (morph base npos + eased cursor displacement ndisp)
+  // horizontal line the field gathers into between sections
+  const HLINE = new Float32Array(NODES * 3);
+  for (let i = 0; i < NODES; i++) {
+    HLINE[i * 3]     = (i / (NODES - 1) - 0.5) * SX * 0.92;
+    HLINE[i * 3 + 1] = (Math.random() - 0.5) * 1.2;
+    HLINE[i * 3 + 2] = (Math.random() - 0.5) * 2.0;
+  }
   const nrender = new Float32Array(npos);
   const ndisp = new Float32Array(NODES * 3);
   const nodeGeo = new THREE.BufferGeometry();
@@ -696,8 +703,13 @@ function initThree() {
     const sp = Math.min(getScroll() / Math.max(window.innerHeight, 1), 3);
     const seg = Math.min(Math.floor(sp), FORMS - 2);
     const raw = sp - seg;
-    const e = raw * raw * (3 - 2 * raw);          // smoothstep blend
-    const A = F[seg], B = F[seg + 1];
+    // gather into a single horizontal line at the section midpoint, drop out past it
+    let A, B, e;
+    if (raw < 0.5) { A = F[seg]; B = HLINE; e = raw * 2; }
+    else { A = HLINE; B = F[seg + 1]; e = (raw - 0.5) * 2; }
+    e = e * e * (3 - 2 * e);
+    const lineness = Math.max(0, 1 - Math.abs(raw - 0.5) * 2); // 0..1, peaks on the line
+    const lineDrop = (0.5 - raw) * 34;                          // descend from above, drop below
     energy = energy * 0.9 + Math.abs(sp - prevSp) * 7;
     energy = Math.min(energy, 1.5);
     prevSp = sp;
@@ -708,11 +720,11 @@ function initThree() {
       const w1 = Math.sin(t * 0.13 + nph[i]) * 0.075;
       const w2 = Math.cos(t * 0.11 + nph[i]) * 0.075;
       const tx = A[o] + (B[o] - A[o]) * e + w1;
-      const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2;
+      const ty = A[o + 1] + (B[o + 1] - A[o + 1]) * e + w2 + lineDrop * lineness;
       const tz = A[o + 2] + (B[o + 2] - A[o + 2]) * e + w1 * 0.8;
-      npos[o]     += (tx - npos[o]) * 0.06;
-      npos[o + 1] += (ty - npos[o + 1]) * 0.06;
-      npos[o + 2] += (tz - npos[o + 2]) * 0.06;
+      npos[o]     += (tx - npos[o]) * 0.18;
+      npos[o + 1] += (ty - npos[o + 1]) * 0.18;
+      npos[o + 2] += (tz - npos[o + 2]) * 0.18;
     }
 
     // CURSOR-REACTIVE: push nearby nodes away from the pointer, then let the
@@ -731,14 +743,14 @@ function initThree() {
       if (d2 < REPEL2 && d2 > 0.0001) {
         const d = Math.sqrt(d2);
         const f = (1 - d / REPEL);
-        const push = f * f * 1.0;            // ease-in falloff, stronger near cursor
+        const push = f * f * 1.0 * (1 - lineness); // no repel while collapsed to the line
         ndisp[o]     += (dx / d) * push;
         ndisp[o + 1] += (dy / d) * push;
         ndisp[o + 2] += (dz / d) * push;
       }
       ndisp[o] *= 0.88; ndisp[o + 1] *= 0.88; ndisp[o + 2] *= 0.88;
       nrender[o]     = npos[o]     + ndisp[o];
-      nrender[o + 1] = npos[o + 1] + ndisp[o + 1];
+      nrender[o + 1] = (npos[o + 1] + ndisp[o + 1]) * (1 - lineness) + lineDrop * lineness;
       nrender[o + 2] = npos[o + 2] + ndisp[o + 2];
     }
     nodeGeo.attributes.position.needsUpdate = true;
@@ -754,6 +766,8 @@ function initThree() {
     dustGeo.attributes.position.needsUpdate = true;
     dust.rotation.y += 0.00004;
     stars.rotation.y += 0.0001;
+    dust.material.opacity = (LITE ? 0.30 : 0.75) * (1 - lineness);
+    stars.material.opacity = (LITE ? 0.0 : 0.55) * (1 - lineness);
 
     // parallax: the whole field leans toward the pointer (immersive depth)
     world.rotation.x = pointer.y * 0.03;
