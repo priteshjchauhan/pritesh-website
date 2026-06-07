@@ -766,8 +766,11 @@ function initThree() {
     dustGeo.attributes.position.needsUpdate = true;
     dust.rotation.y += 0.00004;
     stars.rotation.y += 0.0001;
-    dust.material.opacity = (LITE ? 0.30 : 0.75) * (1 - lineness);
-    stars.material.opacity = (LITE ? 0.0 : 0.55) * (1 - lineness);
+    // constellation recedes over a section (subtle backdrop), comes forward only on the line
+    nodePoints.material.opacity = (LITE ? 0.9 : 0.92) * (0.38 + 0.62 * lineness);
+    lines.material.opacity = (LITE ? 0.6 : 0.45) * (0.32 + 0.68 * lineness);
+    dust.material.opacity = (LITE ? 0.30 : 0.75) * 0.5 * (1 - lineness);
+    stars.material.opacity = (LITE ? 0.0 : 0.55) * 0.5 * (1 - lineness);
 
     // parallax: the whole field leans toward the pointer (immersive depth)
     world.rotation.x = pointer.y * 0.03;
