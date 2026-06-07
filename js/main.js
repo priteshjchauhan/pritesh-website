@@ -769,8 +769,8 @@ function initThree() {
     stars.rotation.y += (0 - stars.rotation.y) * 0.02;
     // visible only between sections: fade hard over a section, surge into the line
     const between = lineness * lineness;   // sharp falloff so only the transition region lights up
-    nodePoints.material.opacity = (LITE ? 0.9 : 0.92) * (0.16 + 0.84 * between);
-    lines.material.opacity = (LITE ? 0.6 : 0.45) * (0.10 + 0.90 * between);
+    nodePoints.material.opacity = (LITE ? 0.9 : 1.0) * (0.26 + 0.74 * between);
+    lines.material.opacity = (LITE ? 0.6 : 0.72) * (0.18 + 0.82 * between);
     dust.material.opacity = (LITE ? 0.30 : 0.75) * (0.10 + 0.65 * lineness);
     stars.material.opacity = (LITE ? 0.0 : 0.45) * (0.12 + 0.60 * lineness);
 
