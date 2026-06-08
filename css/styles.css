@@ -1079,3 +1079,9 @@ html[data-theme-mode="dark"] .theme-toggle .icon-moon { display: inline-flex; }
 /* Remove decorative dots (motion button + "currently in" eyebrow) */
 .motion-toggle-dot { display: none !important; }
 .hero-eyebrow::before { content: none !important; }
+
+
+/* Footer legal links (Privacy / Accessibility) */
+.footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer-links a { color: var(--text-dim); font-size: 0.9rem; text-decoration: none; transition: color 0.2s var(--ease); }
+.footer-links a:hover, .footer-links a:focus-visible { color: var(--text); }
