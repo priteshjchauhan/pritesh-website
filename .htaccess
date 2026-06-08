@@ -1,0 +1,15 @@
+# Disable directory listing
+Options -Indexes
+
+<IfModule mod_headers.c>
+  # Always revalidate HTML so content updates appear immediately (no stale pages)
+  <FilesMatch "\.(html?|json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+  # Cache-busted assets (?v=) may be cached but must revalidate
+  <FilesMatch "\.(css|js|jpe?g|png|gif|svg|webp|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
+  </FilesMatch>
+</IfModule>
